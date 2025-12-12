@@ -1,0 +1,55 @@
+apply plugin: 'com.android.library'
+**APPLY_PLUGINS**
+
+// 🛑 REMOVED REDUNDANT allprojects { repositories { ... } } BLOCK 🛑
+
+dependencies {
+    // These dependencies tell Gradle *what* to get
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation 'com.meta.wearable:mwdat-core:0.2.1'
+    implementation 'com.meta.wearable:mwdat-camera:0.2.1'
+    implementation 'com.meta.wearable:mwdat-mockdevice:0.2.1'
+
+**DEPS**
+}
+
+android {
+    namespace "com.unity3d.player"
+    ndkPath "**NDKPATH**"
+    
+    // 🛑 SDK VERSION FALLBACK FIX: This ensures a value is set even if the placeholder fails. 🛑
+    def compileApi = project.hasProperty('APIVERSION') && **APIVERSION** != '' ? **APIVERSION** : 33
+    compileSdkVersion compileApi
+    
+    // BUILD TOOLS VERSION FALLBACK
+    def buildTools = project.hasProperty('BUILDTOOLS') && '**BUILDTOOLS**' != '' ? '**BUILDTOOLS**' : '33.0.2'
+    buildToolsVersion buildTools 
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_11
+        targetCompatibility JavaVersion.VERSION_11
+    }
+
+    defaultConfig {
+        minSdkVersion 23 // Safe minimum. 
+        targetSdkVersion compileApi // Use the resolved API version
+        ndk {
+            abiFilters **ABIFILTERS**
+        }
+        versionCode **VERSIONCODE**
+        versionName '**VERSIONNAME**'
+        consumerProguardFiles 'proguard-unity.txt'**USER_PROGUARD**
+    }
+
+    lintOptions {
+        abortOnError false
+    }
+
+    aaptOptions {
+        noCompress = **BUILTIN_NOCOMPRESS** + unityStreamingAssets.tokenize(', ')
+        ignoreAssetsPattern = "!.svn:!.git:!.ds_store:!*.scc:!CVS:!thumbs.db:!picasa.ini:!*~"
+    }**PACKAGING_OPTIONS**
+}
+**IL_CPP_BUILD_SETUP**
+**SOURCE_BUILD_SETUP**
+**EXTERNAL_SOURCES**

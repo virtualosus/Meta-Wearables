@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.virtualosus.MetaWearablesDemo">
+
+    <!-- Camera permissions for accessing smart glasses camera -->
+    <uses-permission android:name="android.permission.CAMERA" />
+    
+    <!-- Bluetooth permissions for connecting to Meta Wearables -->
+    <uses-permission android:name="android.permission.BLUETOOTH" />
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+    <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
+    <uses-permission android:name="android.permission.BLUETOOTH_SCAN" />
+    
+    <!-- Internet for cloud features (optional) -->
+    <uses-permission android:name="android.permission.INTERNET" />
+    
+    <!-- Storage for saving photos/videos (optional) -->
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    
+    <!-- Location for Bluetooth LE scanning (required on some Android versions) -->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    
+    <!-- Features -->
+    <uses-feature android:name="android.hardware.camera" android:required="false" />
+    <uses-feature android:name="android.hardware.camera.autofocus" android:required="false" />
+    <uses-feature android:name="android.hardware.bluetooth" android:required="true" />
+    <uses-feature android:name="android.hardware.bluetooth_le" android:required="false" />
+
+    <application>
+        <!-- Meta Wearables Application ID (replace with your actual ID) -->
+        <meta-data
+            android:name="com.meta.wearable.mwdat.APPLICATION_ID"
+            android:value="1523048062260300" />
+            
+        <!-- Analytics opt-out (set to true to disable analytics) -->
+        <meta-data
+            android:name="com.meta.wearable.mwdat.ANALYTICS_OPT_OUT"
+            android:value="false" />
+            
+        <!-- Meta Wearables Service (required) -->
+        <service
+            android:name="com.meta.wearable.mwdat.core.service.MWDatService"
+            android:exported="false" />
+            
+        <!-- Meta Wearables Activity for device pairing (optional) -->
+        <activity
+            android:name="com.meta.wearable.mwdat.core.ui.PairingActivity"
+            android:theme="@android:style/Theme.Material.Light.Dialog"
+            android:exported="false" />
+    </application>
+
+</manifest>

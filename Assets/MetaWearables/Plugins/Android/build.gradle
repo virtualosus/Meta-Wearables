@@ -1,0 +1,70 @@
+// build.gradle for Meta Wearables Unity Plugin
+// Place this in Assets/Plugins/Android/
+
+apply plugin: 'com.android.library'
+
+android {
+    compileSdkVersion 34
+    buildToolsVersion "34.0.0"
+
+    defaultConfig {
+        minSdkVersion 26  // Android 8.0 (API 26) minimum for Meta Wearables
+        targetSdkVersion 34
+        versionCode 1
+        versionName "1.0"
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+repositories {
+    google()
+    mavenCentral()
+    
+    // Meta Wearables DAT Repository
+    maven {
+        url = uri("https://maven.pkg.github.com/facebook/meta-wearables-dat-android")
+        credentials {
+            // You need to set these in your local.properties or environment variables
+            username = project.findProperty("GITHUB_USERNAME") ?: ""
+            password = project.findProperty("GITHUB_TOKEN") ?: ""
+        }
+    }
+}
+
+dependencies {
+    // Unity classes
+    compileOnly files("${System.getenv('UNITY_PATH')}/Editor/Data/PlaybackEngines/AndroidPlayer/Variations/mono/Release/Classes/classes.jar")
+    
+    // Meta Wearables Device Access Toolkit
+    implementation 'com.meta.wearable:mwdat-core:0.2.1'
+    implementation 'com.meta.wearable:mwdat-camera:0.2.1'
+    
+    // Android dependencies
+    implementation 'androidx.appcompat:appcompat:1.6.1'
+    implementation 'androidx.core:core:1.12.0'
+    
+    // Kotlin coroutines (if needed)
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3'
+}
+
+// Task to copy the AAR to Unity's Plugins folder
+task copyAAR(type: Copy) {
+    from('build/outputs/aar')
+    into('../../')
+    include('*.aar')
+}
+
+afterEvaluate {
+    assembleRelease.finalizedBy(copyAAR)
+}
