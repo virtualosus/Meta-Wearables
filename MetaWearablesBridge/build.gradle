@@ -1,0 +1,94 @@
+// C:\Users\sebas\Desktop\MetaWearablesBridge\build.gradle (Root Library Module)
+
+// 1. Configure how to get the Android Gradle Plugin (AGP) and Kotlin Plugin
+buildscript {
+    repositories {
+        google()
+        mavenCentral()
+    }
+    dependencies {
+        // Android Gradle Plugin (AGP)
+        classpath 'com.android.tools.build:gradle:8.1.3'
+
+        // CRITICAL FIX: Kotlin Gradle Plugin
+        classpath 'org.jetbrains.kotlin:kotlin-gradle-plugin:1.9.0' // Use a stable version, e.g., 1.9.0
+    }
+}
+
+// 2. Apply the library plugin, making this module a library
+apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
+
+// 3. Configure the Android Library settings
+android {
+    compileSdkVersion 34
+    namespace "com.metawearables.unity"
+
+    defaultConfig {
+        minSdk 29
+        targetSdkVersion 34
+        versionCode 1
+        versionName "1.0"
+    }
+
+    sourceSets {
+        main {
+            java.srcDirs = ['src/main/java']
+        }
+    }
+
+    // Explicitly set Java compatibility for Android Gradle Plugin 8.x
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    // New: Use Java Toolchain (recommended standard for AGP 8.x)
+    java {
+        toolchain {
+            languageVersion = JavaLanguageVersion.of(17)
+        }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+
+// 4. Define all dependencies for the *root library*
+dependencies {
+    // 1. Meta Wearables DAT Libraries (Ensure AARs in /libs are renamed to mwdat-core.aar, etc.)
+// C:\Users\sebas\Desktop\MetaWearablesBridge\build.gradle
+    implementation files('libs/mwdat-core.aar')
+    implementation files('libs/mwdat-camera.aar')
+
+    // 2. CRITICAL: Kotlin Standard Library (Fixes the "cannot find symbol" errors)
+    implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.9.23'
+
+    // 3. Kotlin Coroutines (from your previous setup)
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3'
+
+    // 4. AndroidX Dependencies (from your previous setup)
+    implementation 'androidx.appcompat:appcompat:1.6.1'
+    implementation 'androidx.core:core:1.12.0'
+
+    // 5. Unity Classes
+    compileOnly files('C:\\\\Program Files\\\\Unity\\\\Hub\\\\Editor\\\\2022.3.48f1\\\\Editor\\\\Data\\\\PlaybackEngines\\\\AndroidPlayer\\\\Variations\\\\il2cpp\\\\Release\\\\Classes\\\\classes.jar')
+}
+
+
+// 5. Build tasks for Unity integration
+task copyAAR(type: Copy) {
+    from('build/outputs/aar')
+    into('../../')
+    include('*.aar')
+}
+
+
+afterEvaluate {
+    assembleRelease.finalizedBy(copyAAR)
+}

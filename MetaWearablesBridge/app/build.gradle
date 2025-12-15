@@ -1,0 +1,72 @@
+// Top-level build file where you can add configuration options common to all sub-projects/modules.
+plugins {
+    // Standard application plugin
+    id 'com.android.application'
+    // Optional: Kotlin Android plugin if you use Kotlin in your app module
+    id 'org.jetbrains.kotlin.android'
+}
+
+
+
+android {
+    // Match the compile SDK version used in your main library module
+    compileSdk 34
+
+    defaultConfig {
+        applicationId "com.metawearables.unity.app" // Unique application ID
+        minSdk 29
+        targetSdk 34
+        versionCode 1
+        versionName "1.0"
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    // Explicitly set Java compatibility
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    // New: Use Java Toolchain (recommended standard for AGP 8.x)
+    java {
+        toolchain {
+            languageVersion = JavaLanguageVersion.of(17)
+        }
+    }
+
+    // Define the namespace for the application module
+    namespace 'com.metawearables.unity.app'
+}
+
+dependencies {
+
+    // CRITICAL: This line links your application module (:app) to your root library module (:)
+    // The root library module (the one containing your DAT dependencies) is now available here.
+    implementation project(':')
+
+
+    // Standard Android App Dependencies
+    implementation 'androidx.core:core-ktx:1.12.0' // Using latest core-ktx version
+    implementation 'androidx.appcompat:appcompat:1.6.1'
+    implementation 'com.google.android.material:material:1.11.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
+
+    // Kotlin Coroutines (if needed)
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3'
+
+    implementation 'org.jetbrains.kotlin:kotlin-stdlib:1.9.0'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3'
+
+    // Testing dependencies
+    testImplementation 'junit:junit:4.13.2'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.5'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
+}

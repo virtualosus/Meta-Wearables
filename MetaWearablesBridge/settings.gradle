@@ -1,0 +1,59 @@
+import java.io.FileInputStream
+import java.util.Properties
+
+// Helper function to load credentials securely from local.properties or environment variables
+def getLocalProperty(String propertyName) {
+    def properties = new Properties()
+    // This finds the local.properties file in the root of the project.
+    def propFile = new File(rootDir, "local.properties")
+
+    if (propFile.exists()) {
+        properties.load(new FileInputStream(propFile))
+    }
+    // Fallback to environment variable if not found in local.properties
+    return properties.getProperty(propertyName) ?: System.getenv(propertyName)
+}
+
+
+pluginManagement {
+    repositories {
+        // Standard repositories for plugins (e.g., Android Gradle Plugin)
+        google()
+        mavenCentral()
+        gradlePluginPortal()
+    }
+}
+
+// Consolidated block for dependency resolution (Where libraries are found)
+dependencyResolutionManagement {
+    // This line enforces that all projects must define their repositories here (good practice)
+    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+    repositories {
+        // Standard repositories for library dependencies
+        google()
+        mavenCentral()
+
+        // Meta Wearables Device Access Toolkit (DAT) Repository
+        maven { url "https://repo.gradle.org/gradle/meta" }
+
+        // CRITICAL: This is the repository needed for local AAR files referenced by name:
+        // 'mwdat-core' and 'mwdat-camera'
+        flatDir {
+            dirs 'libs', 'unityLibrary/libs'
+        }
+    }
+}
+
+
+rootProject.name = "MetaWearablesBridge"
+
+// Project inclusions (Sub-Modules)
+include ':app'
+// The main library is the root project, so we DO NOT include it here.
+
+// Includes for Unity-related modules
+// --- THIS WAS THE LINE CAUSING THE ERROR, NOW CLEANED ---
+include ':unityLibrary:xrmanifest.androidlib'
+project(':unityLibrary:xrmanifest.androidlib').projectDir = new File(
+        'unityLibrary/xrmanifest.androidlib'
+)
