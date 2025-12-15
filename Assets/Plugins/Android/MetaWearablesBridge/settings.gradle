@@ -1,0 +1,38 @@
+pluginManagement {
+    repositories {
+        // Standard repositories for plugins (e.g., Android Gradle Plugin)
+        google()
+        mavenCentral()
+        // If you need it, add Gradle Plugin Portal:
+        // gradlePluginPortal()
+    }
+}
+
+dependencyResolutionManagement {
+    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+    repositories {
+        // --- THIS SECTION IS CRITICAL ---
+        // Standard repositories for library dependencies (like androidx.appcompat)
+        google()
+        mavenCentral()
+        // --- ADD META REPOSITORY HERE (See Step 2) ---
+
+        maven {
+            url = uri("https://maven.pkg.github.com/facebook/meta-wearables-dat-android")
+            credentials {
+                // You need to set these in your local.properties or environment variables
+                username = "virtualosus"
+                password = "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"
+            }
+        }
+    }
+}
+
+
+include ':app'
+rootProject.name = "MetaWearablesBridge"
+
+include ':unityLibrary:xrmanifest.androidlib'
+project(':unityLibrary:xrmanifest.androidlib').projectDir = new File(
+    'unityLibrary/xrmanifest.androidlib'
+)

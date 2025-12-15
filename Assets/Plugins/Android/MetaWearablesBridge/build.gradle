@@ -1,5 +1,18 @@
-// build.gradle for Meta Wearables Unity Plugin
-// Place this in Assets/Plugins/Android/
+buildscript {
+    repositories {
+        maven {
+            url "https://plugins.gradle.org/m2/"
+            google()
+
+        }
+
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:8.13.2'
+
+    }
+}
 
 apply plugin: 'com.android.library'
 
@@ -27,33 +40,21 @@ android {
     }
 }
 
-repositories {
-    google()
-    mavenCentral()
-    
-    // Meta Wearables DAT Repository
-    maven {
-        url = uri("https://maven.pkg.github.com/facebook/meta-wearables-dat-android")
-        credentials {
-            // You need to set these in your local.properties or environment variables
-            username = project.findProperty("GITHUB_USERNAME") ?: ""
-            password = project.findProperty("GITHUB_TOKEN") ?: ""
-        }
-    }
-}
 
 dependencies {
+
+
     // Unity classes
     compileOnly files("${System.getenv('UNITY_PATH')}/Editor/Data/PlaybackEngines/AndroidPlayer/Variations/mono/Release/Classes/classes.jar")
-    
+
     // Meta Wearables Device Access Toolkit
     implementation 'com.meta.wearable:mwdat-core:0.2.1'
     implementation 'com.meta.wearable:mwdat-camera:0.2.1'
-    
+
     // Android dependencies
     implementation 'androidx.appcompat:appcompat:1.6.1'
     implementation 'androidx.core:core:1.12.0'
-    
+
     // Kotlin coroutines (if needed)
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3'
 }
@@ -67,4 +68,8 @@ task copyAAR(type: Copy) {
 
 afterEvaluate {
     assembleRelease.finalizedBy(copyAAR)
+}
+
+android {
+    namespace = "com.metawearables.unity"
 }

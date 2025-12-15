@@ -1,0 +1,33 @@
+// MODULE build.gradle (in app folder)
+apply plugin: 'com.android.library'
+
+android {
+    compileSdkVersion 34
+    buildToolsVersion "34.0.0"
+
+    defaultConfig {
+        minSdkVersion 29
+        targetSdkVersion 34
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+}
+
+dependencies {
+    // Meta Wearables SDK
+    implementation 'com.meta.wearable:mwdat-core:0.2.1'
+    implementation 'com.meta.wearable:mwdat-camera:0.2.1'
+    
+    // Unity classes
+    compileOnly files('../libs/classes.jar')
+    
+    // Android dependencies
+    implementation 'androidx.appcompat:appcompat:1.6.1'
+}
+
+android {
+    namespace = "com.metawearables.unity"
+}
